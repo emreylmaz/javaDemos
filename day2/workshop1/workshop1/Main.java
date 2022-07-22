@@ -23,6 +23,10 @@ public class Main {
         Course course3 = new Course();
         Course course4 = new Course();
 
+
+
+
+
         //1. Kurs Bilgileri giriş
         course1.setCategory(category);
         course1.setTeacher(t1);
@@ -31,6 +35,8 @@ public class Main {
         course1.setCourseDuration(50);
         course1.setId(1);
         course1.setCoursePrice(0);
+
+
 
         //2. Kurs Bilgileri giriş
         course2.setCategory(category);
@@ -98,6 +104,17 @@ public class Main {
 
         System.out.println("Ogrenci ismi: " + s1.getStudentName());
         System.out.println("Ogrencinin sahip oldugu kurs sayisi: " + s1.getCourses().size());
+        CourseService courseService = new CourseService();
+        CategoryService categoryService = new CategoryService();
+        StudentService studentService = new StudentService();
+        TeacherService teacherService = new TeacherService();
+
+        courseService.add(course1);
+        courseService.add(course2);
+        courseService.add(course3);
+        courseService.add(course4);
+        categoryService.add(category);
+        studentService.add(s1);
 
     }
 }
