@@ -2,12 +2,9 @@ package business.concretes;
 
 import business.abstracts.UserService;
 import core.abstracts.EmailSendService;
-import core.abstracts.SignUpService;
-import core.concretes.EmailSendManager;
 import core.concretes.SignUpServiceManager;
 import core.concretes.jGoogleServiceAdapter;
 import dataAccess.abstracts.UserDao;
-import dataAccess.concretes.HibernateUserDao;
 import entities.concretes.User;
 
 import java.util.ArrayList;
@@ -30,13 +27,9 @@ public class UserManager implements UserService {
 
 
     }
-
     public UserManager() {
 
     }
-
-
-
 
     @Override
     public void signUp(User user) {
@@ -52,7 +45,6 @@ public class UserManager implements UserService {
         {
             this.signUpService.signUpIsFail();
         }
-
 
     }
 
