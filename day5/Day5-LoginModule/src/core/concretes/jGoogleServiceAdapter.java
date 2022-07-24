@@ -8,15 +8,15 @@ public class jGoogleServiceAdapter implements SignUpService {
     @Override
     public void signUp(String email) {
         jGoogleServiceManager service = new jGoogleServiceManager();
-        service.signInGoogle(email);
+        service.signInGoogle();
 
     }
 
     @Override
-    public void signUpIsFail(String email) {
+    public void signUpIsFail() {
 
         jGoogleServiceManager service = new jGoogleServiceManager();
-        service.errorSignIn(email);
+        service.errorSignIn();
 
     }
 }

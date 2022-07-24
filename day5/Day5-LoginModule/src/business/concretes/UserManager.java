@@ -3,14 +3,17 @@ package business.concretes;
 import business.abstracts.UserService;
 import core.abstracts.EmailSendService;
 import core.abstracts.SignUpService;
-import core.abstracts.VerificationService;
+import core.concretes.EmailSendManager;
 import core.concretes.SignUpServiceManager;
-import core.concretes.VerificationManager;
+import core.concretes.jGoogleServiceAdapter;
 import dataAccess.abstracts.UserDao;
+import dataAccess.concretes.HibernateUserDao;
 import entities.concretes.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserManager implements UserService {
     List<String> emailList=new ArrayList<String>();
@@ -18,18 +21,26 @@ public class UserManager implements UserService {
     private EmailSendService emailSendService;
     private SignUpServiceManager signUpService;
     private UserDao userDao;
-    private VerificationManager verificationManager;
+    private jGoogleServiceAdapter jgoogleServiceAdapter;
 
-    public UserManager(EmailSendService emailSendService, SignUpServiceManager signUpService, UserDao userDao, VerificationManager verificationManager) {
+    public UserManager(EmailSendService emailSendService, SignUpServiceManager signUpService, UserDao userDao) {
         this.emailSendService = emailSendService;
         this.signUpService = signUpService;
         this.userDao = userDao;
-        this.verificationManager = verificationManager;
+
+
     }
+
+    public UserManager() {
+
+    }
+
+
+
 
     @Override
     public void signUp(User user) {
-        if(verificationManager.emailVerification(user) && verificationManager.passwordVerification(user) && verificationManager.nameVerification(user))
+        if(emailVerification(user) && passwordVerification(user) && !nameVerification(user))
         {
             emailList.add(user.getEmail());
             this.emailSendService.sendVerifyEmail(user.getEmail());
@@ -39,7 +50,7 @@ public class UserManager implements UserService {
         }
         else
         {
-            this.signUpService.signUpIsFail(user.getEmail());
+            this.signUpService.signUpIsFail();
         }
 
 
@@ -61,11 +72,50 @@ public class UserManager implements UserService {
 
     @Override
     public boolean login(User user) {
-        if (!verificationManager.emailVerification(user)){
+        if (emailVerification(user)){
             System.out.println("Login success");
             return true;
         }else {
             System.out.println("Login fail"+ user.getEmail());
+            return false;
+        }
+    }
+
+    private boolean emailVerification(User user) {
+        final Pattern emailRegex = Pattern.compile("[a-z0-9!#$%&'+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'+/=?^_`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
+        if (emailRegex.matcher((CharSequence) user.getEmail()).matches()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean passwordVerification(User user) {
+        String regex = "[0-9a-zA-Z]{6,}";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(user.getPassword());
+        if(matcher.matches()==true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private boolean nameVerification(User user) {
+        String regex = "[0-9a-zA-Z]{6,}";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(user.getFirstName());
+        Matcher matcherLastName = pattern.matcher(user.getLastName());
+        if(matcher.matches()==true && matcherLastName.matches()==true)
+        {
+            return true;
+        }
+        else
+        {
             return false;
         }
     }
